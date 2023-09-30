@@ -129,4 +129,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MONGODB_URL = "mongodb+srv://Birinder-shl:shldataset@cluster22.yugbvm9.mongodb.net/?retryWrites=true&w=majority"
 
-OPENAI_ACCESS_KEY = "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"
+OPENAI_ACCESS_KEY = "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"
