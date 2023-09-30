@@ -5,9 +5,8 @@ from shldjango.settings import MONGODB_URL,OPENAI_ACCESS_KEY
 from pymongo.mongo_client import MongoClient
 import openai
 from django.http import JsonResponse
-import pandas as pd
 import json
-from bson import json_util
+
 def connect_to_db():
     try:
         client = MongoClient(MONGODB_URL)
@@ -115,54 +114,3 @@ def get_from_gpt(phrase):
         parsed_data = parsed_query.choices[0].text.strip()
         return str(parsed_data)
 
-
-def convertcsv(request):
-    csv_file = '/home/birinder/practice/shl.xlsx'
-    sheet = pd.read_excel(csv_file, sheet_name=0)
-
-    data_list = []
-
-    for index, row in sheet.iterrows():
-        data_dict = dict()
-        data_dict["Title"] = str(row["Project.Title"])
-        if str(row["Technical_Skillset.Databases"]) == "nan":
-            data_dict['Databases'] = ""
-        else:
-            data_dict["Databases"] = str(row["Technical_Skillset.Databases"])
-
-        if str(row["Project.Technologies"]) == "nan":
-            data_dict["Technologies"] = ""
-        else:
-            data_dict["Technologies"] = str(row["Project.Technologies"])
-
-        if str(row["Technical_Skillset.Frontend"]) == "nan":
-            data_dict["Frontend"] = ""
-        else:
-            data_dict["Frontend"] = str(row["Technical_Skillset.Frontend"])
-
-        if str(row["Technical_Skillset.Backend"]) == "nan":
-            data_dict["Backend"] = ""
-        else:
-            data_dict["Backend"] = str(row["Technical_Skillset.Backend"])
-
-        if str(row["Technical_Skillset.Infrastructre"]) == "nan":
-            data_dict["Infrastructre"] = ""
-        else:
-            # data_dict["Infrastructre"] = str(row["Technical_Skillset.Infrastructre"]).split(',')
-            data_dict["Infrastructre"] = str(row["Technical_Skillset.Infrastructre"])
-
-        data_dict["Availability"] = str(row["Other_Information.Availability"])
-        data_list.append(data_dict)
-
-
-    client = MongoClient(MONGODB_URL)
-    db = client["shl-datasetDB"]
-    dataset_col = db["dataset"]
-
-    dataset_col.insert_many(data_list)
-    #
-    # # Convert DataFrame to a list of dictionaries (to_dict with 'records' argument)
-    # data = df.to_dict(orient='records')
-    #
-    # # Insert data into MongoDB
-    # dataset_col.insert_many(data)
